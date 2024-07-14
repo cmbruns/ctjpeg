@@ -13,6 +13,7 @@ from ctypes import (
     c_void_p,
 )
 
+boolean: type = c_ubyte
 JSAMPLE: type = c_ubyte
 J12SAMPLE: type = c_short
 J16SAMPLE: type = c_ushort
@@ -21,7 +22,6 @@ JOCTET: type = c_ubyte
 UINT8: type = c_ubyte
 UINT16: type = c_ushort
 JDIMENSION: type = c_uint
-boolean: type = c_int
 JSAMPROW: type = POINTER(JSAMPLE)  # ptr to one image row of pixel samples. 
 JSAMPARRAY: type = POINTER(JSAMPROW)  # ptr to some rows (a 2-D sample array) 
 JSAMPIMAGE: type = POINTER(JSAMPARRAY)  # a 3-D sample array: top index is color 
@@ -606,7 +606,7 @@ class jpeg_error_mgr(Structure):
         # A message can have one string parameter or up to 8 int parameters.
         ("msg_code", c_int),
 
-        ("msg_parm", union jpeg_error_mgr::(unnamed at C:\Users\cmbruns\Documents\git\libjpeg-turbo\jpeglib.h:796:3)),
+        ("msg_parm", union jpeg_error_mgr::(unnamed at C:\Users\cmbruns\Documents\git\ctjpeg\ctj\jpeglib.h:796:3)),
 
         ("trace_level", c_int),  # max msg_level that will be displayed 
 

@@ -11,10 +11,10 @@ file_manager = contextlib.ExitStack()
 atexit.register(file_manager.close)
 
 
-def resource_filename(package: str, file_name: str):
+def resource_filename(package: str, file_name: str) -> str:
     """Similar functionality to now-deprecated pkg_resources.resource_filename() call"""
     ref = importlib.resources.files(package) / file_name
-    return file_manager.enter_context(importlib.resources.as_file(ref))
+    return str(file_manager.enter_context(importlib.resources.as_file(ref)))
 
 
 __all__ = [

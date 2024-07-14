@@ -1,8 +1,10 @@
+from ctj.resources import resource_filename
 from wraptor import CTypesCodeGenerator, ModuleBuilder
 
 
 def main():
-    header_file = "C:/Users/cmbruns/Documents/git/libjpeg-turbo/jpeglib.h"
+    # header_file = "C:/Users/cmbruns/Documents/git/libjpeg-turbo/jpeglib.h"
+    header_file = str(resource_filename("ctj", "jpeglib.h"))
     mb = ModuleBuilder(file_paths=[header_file,])
     mb.typedef("JBLOCK").include()
     mb.typedefs(lambda c: c.location.file.name == header_file).include()
