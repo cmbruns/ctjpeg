@@ -9,10 +9,12 @@ from ctypes import (
     c_short,
     c_ubyte,
     c_uint,
+    c_ulonglong,
     c_ushort,
     c_void_p,
 )
 
+size_t: type = c_ulonglong
 boolean: type = c_ubyte
 JSAMPLE: type = c_ubyte
 J12SAMPLE: type = c_short
@@ -779,4 +781,5 @@ __all__ = [
     "jpeg_source_mgr",
     "jvirt_barray_ptr",
     "jvirt_sarray_ptr",
+    "size_t",
 ]
