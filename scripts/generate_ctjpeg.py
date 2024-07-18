@@ -14,28 +14,30 @@ def main():
         unsaved_files=(
             (jpeglib_path, inspect.cleandoc(f"""
                 #include "stdio.h"
-            """) + jpeglib_contents),
+            """) + "\n" + jpeglib_contents),
         ),
     )
-    # mb.typedef("JBLOCK").include()
-    mb.typedefs(lambda c: c.location.file.name == jpeglib_path).include()
+    jpeg_header = mb.in_header(jpeglib_path)
+    jpeg_header.typedefs().include()
+    jpeg_header.macros().include()
     # Supply missing dependencies outside the header
     for typedef in [
-        "JDIMENSION",
-        "JOCTET",
-        "JSAMPLE",
+        "boolean",
         "J12SAMPLE",
         "J16SAMPLE",
         "JCOEF",
+        "JDIMENSION",
+        "JOCTET",
+        "JSAMPLE",
+        "size_t",
         "UINT8",
         "UINT16",
-        "boolean",
-        "size_t",
     ]:
         mb.typedef(typedef).include()
-    mb.structs(lambda c: c.location.file.name == jpeglib_path).include()
-    # mb.struct("JQUANT_TBL").include()
-    # mb.struct("jpeg_decompress_struct").include()
+    jpeg_header.structs().include()
+    # Create a declaration for the union type of one field
+    # mb.struct("jpeg_error_mgr").field("msg_parm").type.insert_declaration("msg_parm_union_t")
+    foo = mb.struct("jpeg_error_mgr").field("msg_parm").type.get_declaration()
     ct = CTypesCodeGenerator(mb)
     with open("../ctj/jpeglib.py", "w") as output:
         ct.write_module(output)
