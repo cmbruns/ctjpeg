@@ -20,6 +20,7 @@ def main():
     jpeg_header = mb.in_header(jpeglib_path)
     jpeg_header.typedefs().include()
     jpeg_header.macros().include()
+    jpeg_header.enums().include()
     # Supply missing dependencies outside the header
     for typedef in [
         "boolean",

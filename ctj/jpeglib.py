@@ -13,6 +13,7 @@ from ctypes import (
     c_ushort,
     c_void_p,
 )
+from enum import IntFlag
 
 DCTSIZE = 8  # The basic DCT block is 8x8 samples
 DCTSIZE2 = 64  # DCTSIZE squared; # of elements in a block
@@ -225,6 +226,38 @@ class jpeg_marker_struct(Structure):
 
         ("data", POINTER(JOCTET)),  # the data contained in the marker
     )
+
+
+class J_COLOR_SPACE(IntFlag):
+    JCS_UNKNOWN = 0
+    JCS_GRAYSCALE = 1
+    JCS_RGB = 2
+    JCS_YCbCr = 3
+    JCS_CMYK = 4
+    JCS_YCCK = 5
+    JCS_EXT_RGB = 6
+    JCS_EXT_RGBX = 7
+    JCS_EXT_BGR = 8
+    JCS_EXT_BGRX = 9
+    JCS_EXT_XBGR = 10
+    JCS_EXT_XRGB = 11
+    JCS_EXT_RGBA = 12
+    JCS_EXT_BGRA = 13
+    JCS_EXT_ABGR = 14
+    JCS_EXT_ARGB = 15
+    JCS_RGB565 = 16
+
+
+class J_DCT_METHOD(IntFlag):
+    JDCT_ISLOW = 0
+    JDCT_IFAST = 1
+    JDCT_FLOAT = 2
+
+
+class J_DITHER_MODE(IntFlag):
+    JDITHER_NONE = 0
+    JDITHER_ORDERED = 1
+    JDITHER_FS = 2
 
 
 class jpeg_common_struct(Structure):
@@ -846,6 +879,9 @@ __all__ = [
     "JSAMPIMAGE",
     "JSAMPLE",
     "JSAMPROW",
+    "J_COLOR_SPACE",
+    "J_DCT_METHOD",
+    "J_DITHER_MODE",
     "MAX_COMPS_IN_SCAN",
     "MAX_SAMP_FACTOR",
     "NUM_ARITH_TBLS",
