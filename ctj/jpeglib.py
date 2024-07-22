@@ -277,15 +277,18 @@ JDITHER_ORDERED = J_DITHER_MODE.JDITHER_ORDERED
 JDITHER_FS = J_DITHER_MODE.JDITHER_FS
 
 
+# Forward declaration. Definition of _fields_ will appear later.
+class jpeg_memory_mgr(Structure):
+    pass
+
+
+# Forward declaration. Definition of _fields_ will appear later.
 class jpeg_error_mgr(Structure):
     pass
 
 
+# Forward declaration. Definition of _fields_ will appear later.
 class jpeg_progress_mgr(Structure):
-    pass
-
-
-class jpeg_memory_mgr(Structure):
     pass
 
 
@@ -322,6 +325,35 @@ class jpeg_decompress_struct(Structure):
 j_decompress_ptr: type = POINTER(jpeg_decompress_struct)
 
 
+class jpeg_entropy_encoder(Structure):
+    pass
+
+
+class jpeg_c_main_controller(Structure):
+    pass
+
+
+class jpeg_c_prep_controller(Structure):
+    pass
+
+
+class jpeg_c_coef_controller(Structure):
+    pass
+
+
+class jpeg_comp_master(Structure):
+    pass
+
+
+class jpeg_downsampler(Structure):
+    pass
+
+
+# Forward declaration. Definition of _fields_ will appear later.
+class jpeg_destination_mgr(Structure):
+    pass
+
+
 class jpeg_marker_writer(Structure):
     pass
 
@@ -331,34 +363,6 @@ class jpeg_forward_dct(Structure):
 
 
 class jpeg_color_converter(Structure):
-    pass
-
-
-class jpeg_entropy_encoder(Structure):
-    pass
-
-
-class jpeg_c_main_controller(Structure):
-    pass
-
-
-class jpeg_destination_mgr(Structure):
-    pass
-
-
-class jpeg_c_coef_controller(Structure):
-    pass
-
-
-class jpeg_downsampler(Structure):
-    pass
-
-
-class jpeg_comp_master(Structure):
-    pass
-
-
-class jpeg_c_prep_controller(Structure):
     pass
 
 
@@ -511,23 +515,20 @@ class jpeg_compress_struct(Structure):
     )
 
 
+class jpeg_entropy_decoder(Structure):
+    pass
+
+
 class jpeg_color_quantizer(Structure):
     pass
 
 
+class jpeg_upsampler(Structure):
+    pass
+
+
+# Forward declaration. Definition of _fields_ will appear later.
 class jpeg_source_mgr(Structure):
-    pass
-
-
-class jpeg_input_controller(Structure):
-    pass
-
-
-class jpeg_inverse_dct(Structure):
-    pass
-
-
-class jpeg_d_coef_controller(Structure):
     pass
 
 
@@ -535,7 +536,7 @@ class jpeg_decomp_master(Structure):
     pass
 
 
-class jpeg_upsampler(Structure):
+class jpeg_color_deconverter(Structure):
     pass
 
 
@@ -547,11 +548,15 @@ class jpeg_d_main_controller(Structure):
     pass
 
 
-class jpeg_color_deconverter(Structure):
+class jpeg_d_coef_controller(Structure):
     pass
 
 
-class jpeg_entropy_decoder(Structure):
+class jpeg_inverse_dct(Structure):
+    pass
+
+
+class jpeg_input_controller(Structure):
     pass
 
 
@@ -802,7 +807,7 @@ class _MsgParmUnion(Union):
     )
 
 
-jpeg_error_mgr._fields = (
+jpeg_error_mgr._fields_ = (
         # Error exit handler: does not return to caller
         ("error_exit", CFUNCTYPE(None, j_common_ptr)),
 
@@ -856,7 +861,7 @@ jpeg_error_mgr._fields = (
     )
 
 
-jpeg_progress_mgr._fields = (
+jpeg_progress_mgr._fields_ = (
         ("progress_monitor", CFUNCTYPE(None, j_common_ptr)),
 
         ("pass_counter", c_long),  # work units completed in this pass
@@ -869,7 +874,7 @@ jpeg_progress_mgr._fields = (
     )
 
 
-jpeg_destination_mgr._fields = (
+jpeg_destination_mgr._fields_ = (
         ("next_output_byte", POINTER(JOCTET)),  # => next byte to write in buffer
 
         ("free_in_buffer", size_t),  # # of byte spaces remaining in buffer
@@ -882,7 +887,7 @@ jpeg_destination_mgr._fields = (
     )
 
 
-jpeg_source_mgr._fields = (
+jpeg_source_mgr._fields_ = (
         ("next_input_byte", POINTER(JOCTET)),  # => next byte to read from buffer
 
         ("bytes_in_buffer", size_t),  # # of bytes remaining in buffer
@@ -918,7 +923,7 @@ class jvirt_barray_control(Structure):
 jvirt_barray_ptr: type = POINTER(jvirt_barray_control)
 
 
-jpeg_memory_mgr._fields = (
+jpeg_memory_mgr._fields_ = (
         # Method pointers
         ("alloc_small", CFUNCTYPE(c_void_p, j_common_ptr, c_int, size_t)),
 
