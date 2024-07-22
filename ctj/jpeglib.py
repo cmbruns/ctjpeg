@@ -17,6 +17,7 @@ from ctypes import (
 )
 from enum import IntFlag
 
+JPEG_LIB_VERSION = 62
 size_t: type = c_ulonglong
 boolean: type = c_ubyte
 JSAMPLE: type = c_ubyte
@@ -187,6 +188,7 @@ class jpeg_scan_info(Structure):
     )
 
 
+# Forward declaration. Definition of _fields_ will appear later.
 class jpeg_marker_struct(Structure):
     pass
 
@@ -194,8 +196,7 @@ class jpeg_marker_struct(Structure):
 jpeg_saved_marker_ptr: type = POINTER(jpeg_marker_struct)
 
 
-class jpeg_marker_struct(Structure):
-    _fields_ = (
+jpeg_marker_struct._fields_ = (
         ("next", jpeg_saved_marker_ptr),  # next in list, or NULL
 
         ("marker", UINT8),  # marker code: JPEG_COM, or JPEG_APP0+n
@@ -278,17 +279,17 @@ JDITHER_FS = J_DITHER_MODE.JDITHER_FS
 
 
 # Forward declaration. Definition of _fields_ will appear later.
+class jpeg_progress_mgr(Structure):
+    pass
+
+
+# Forward declaration. Definition of _fields_ will appear later.
 class jpeg_memory_mgr(Structure):
     pass
 
 
 # Forward declaration. Definition of _fields_ will appear later.
 class jpeg_error_mgr(Structure):
-    pass
-
-
-# Forward declaration. Definition of _fields_ will appear later.
-class jpeg_progress_mgr(Structure):
     pass
 
 
@@ -311,46 +312,23 @@ class jpeg_common_struct(Structure):
 j_common_ptr: type = POINTER(jpeg_common_struct)
 
 
+# Forward declaration. Definition of _fields_ will appear later.
 class jpeg_compress_struct(Structure):
     pass
-
-
 j_compress_ptr: type = POINTER(jpeg_compress_struct)
 
 
+# Forward declaration. Definition of _fields_ will appear later.
 class jpeg_decompress_struct(Structure):
     pass
-
-
 j_decompress_ptr: type = POINTER(jpeg_decompress_struct)
-
-
-class jpeg_entropy_encoder(Structure):
-    pass
-
-
-class jpeg_c_main_controller(Structure):
-    pass
-
-
-class jpeg_c_prep_controller(Structure):
-    pass
 
 
 class jpeg_c_coef_controller(Structure):
     pass
 
 
-class jpeg_comp_master(Structure):
-    pass
-
-
-class jpeg_downsampler(Structure):
-    pass
-
-
-# Forward declaration. Definition of _fields_ will appear later.
-class jpeg_destination_mgr(Structure):
+class jpeg_entropy_encoder(Structure):
     pass
 
 
@@ -362,12 +340,32 @@ class jpeg_forward_dct(Structure):
     pass
 
 
+class jpeg_c_main_controller(Structure):
+    pass
+
+
+# Forward declaration. Definition of _fields_ will appear later.
+class jpeg_destination_mgr(Structure):
+    pass
+
+
+class jpeg_comp_master(Structure):
+    pass
+
+
+class jpeg_c_prep_controller(Structure):
+    pass
+
+
 class jpeg_color_converter(Structure):
     pass
 
 
-class jpeg_compress_struct(Structure):
-    _fields_ = (
+class jpeg_downsampler(Structure):
+    pass
+
+
+jpeg_compress_struct._fields_ = (
         ("err", POINTER(jpeg_error_mgr)),  # Fields shared with jpeg_decompress_struct
 
         ("mem", POINTER(jpeg_memory_mgr)),  # Fields shared with jpeg_decompress_struct
@@ -515,11 +513,15 @@ class jpeg_compress_struct(Structure):
     )
 
 
-class jpeg_entropy_decoder(Structure):
+class jpeg_decomp_master(Structure):
     pass
 
 
-class jpeg_color_quantizer(Structure):
+class jpeg_inverse_dct(Structure):
+    pass
+
+
+class jpeg_d_main_controller(Structure):
     pass
 
 
@@ -532,11 +534,7 @@ class jpeg_source_mgr(Structure):
     pass
 
 
-class jpeg_decomp_master(Structure):
-    pass
-
-
-class jpeg_color_deconverter(Structure):
+class jpeg_d_coef_controller(Structure):
     pass
 
 
@@ -544,19 +542,19 @@ class jpeg_marker_reader(Structure):
     pass
 
 
-class jpeg_d_main_controller(Structure):
-    pass
-
-
-class jpeg_d_coef_controller(Structure):
-    pass
-
-
-class jpeg_inverse_dct(Structure):
-    pass
-
-
 class jpeg_input_controller(Structure):
+    pass
+
+
+class jpeg_color_quantizer(Structure):
+    pass
+
+
+class jpeg_entropy_decoder(Structure):
+    pass
+
+
+class jpeg_color_deconverter(Structure):
     pass
 
 
@@ -564,8 +562,7 @@ class jpeg_d_post_controller(Structure):
     pass
 
 
-class jpeg_decompress_struct(Structure):
-    _fields_ = (
+jpeg_decompress_struct._fields_ = (
         ("err", POINTER(jpeg_error_mgr)),  # Fields shared with jpeg_compress_struct
 
         ("mem", POINTER(jpeg_memory_mgr)),  # Fields shared with jpeg_compress_struct
@@ -909,17 +906,15 @@ JPOOL_IMAGE = 1  # lasts until done with image/datastream
 JPOOL_NUMPOOLS = 2
 
 
+# Forward declaration
 class jvirt_sarray_control(Structure):
     pass
-
-
 jvirt_sarray_ptr: type = POINTER(jvirt_sarray_control)
 
 
+# Forward declaration
 class jvirt_barray_control(Structure):
     pass
-
-
 jvirt_barray_ptr: type = POINTER(jvirt_barray_control)
 
 
@@ -986,32 +981,28 @@ __all__ = [
     "D_MAX_BLOCKS_IN_MCU",
     "J12SAMPARRAY",
     "J12SAMPIMAGE",
-    "J12SAMPLE",
     "J12SAMPROW",
     "J16SAMPARRAY",
     "J16SAMPIMAGE",
-    "J16SAMPLE",
     "J16SAMPROW",
     "JBLOCK",
     "JBLOCKARRAY",
     "JBLOCKIMAGE",
     "JBLOCKROW",
-    "JCOEF",
     "JCOEFPTR",
     "JCS_ALPHA_EXTENSIONS",
     "JCS_EXTENSIONS",
     "JDCT_DEFAULT",
     "JDCT_FASTEST",
-    "JDIMENSION",
     "JHUFF_TBL",
     "JMSG_LENGTH_MAX",
     "JMSG_STR_PARM_MAX",
-    "JOCTET",
     "JPEG_APP0",
     "JPEG_COM",
     "JPEG_EOI",
     "JPEG_HEADER_OK",
     "JPEG_HEADER_TABLES_ONLY",
+    "JPEG_LIB_VERSION",
     "JPEG_REACHED_EOI",
     "JPEG_REACHED_SOS",
     "JPEG_ROW_COMPLETED",
@@ -1024,7 +1015,6 @@ __all__ = [
     "JQUANT_TBL",
     "JSAMPARRAY",
     "JSAMPIMAGE",
-    "JSAMPLE",
     "JSAMPROW",
     "J_COLOR_SPACE",
     "J_DCT_METHOD",
@@ -1034,36 +1024,22 @@ __all__ = [
     "NUM_ARITH_TBLS",
     "NUM_HUFF_TBLS",
     "NUM_QUANT_TBLS",
-    "UINT16",
-    "UINT8",
-    "boolean",
     "j_common_ptr",
     "j_compress_ptr",
     "j_decompress_ptr",
     "jpeg_common_struct",
     "jpeg_component_info",
     "jpeg_compress_struct",
-    "jpeg_compress_struct",
-    "jpeg_decompress_struct",
     "jpeg_decompress_struct",
     "jpeg_destination_mgr",
-    "jpeg_destination_mgr",
-    "jpeg_error_mgr",
     "jpeg_error_mgr",
     "jpeg_marker_parser_method",
     "jpeg_marker_struct",
-    "jpeg_marker_struct",
     "jpeg_memory_mgr",
-    "jpeg_memory_mgr",
-    "jpeg_progress_mgr",
     "jpeg_progress_mgr",
     "jpeg_saved_marker_ptr",
     "jpeg_scan_info",
     "jpeg_source_mgr",
-    "jpeg_source_mgr",
-    "jvirt_barray_control",
     "jvirt_barray_ptr",
-    "jvirt_sarray_control",
     "jvirt_sarray_ptr",
-    "size_t",
 ]

@@ -21,6 +21,9 @@ def main():
     jpeg_header.typedefs().include()
     jpeg_header.macros().include()
     jpeg_header.enums().include()
+
+    mb.macro("JPEG_LIB_VERSION").include()
+
     # Supply missing dependencies outside the header
     for typedef in [
         "boolean",
@@ -34,7 +37,7 @@ def main():
         "UINT8",
         "UINT16",
     ]:
-        mb.typedef(typedef).include()
+        mb.typedef(typedef).include(export=False)
     jpeg_header.structs().include()
 
     # Create a declaration for the union type of one field
@@ -47,7 +50,7 @@ def main():
 
     # Manual forward declaration for jpeg_error_mgr
     jpeg_common_struct = mb.struct("jpeg_common_struct")
-    jpeg_error_mgr.include_forward(before=jpeg_common_struct)
+    jpeg_error_mgr.include_forward(export=False, before=jpeg_common_struct)
     mb.struct("jpeg_memory_mgr").include_forward(before=jpeg_common_struct)
     mb.struct("jpeg_progress_mgr").include_forward(before=jpeg_common_struct)
     jpeg_compress_struct = mb.struct("jpeg_compress_struct")
@@ -85,8 +88,15 @@ def main():
         field_type = jpeg_decompress_struct.field(field_name).field_type()
         field_type.include(export=False, before=jpeg_decompress_struct)
 
-    # mb.struct("jpeg_comp_master").include_forward(before=jpeg_compress_struct)
     mb.struct("jpeg_source_mgr").include_forward(before=mb.struct("jpeg_decompress_struct"))
+    mb.struct("jpeg_marker_struct").include_forward(before=mb.typedef("jpeg_saved_marker_ptr"))
+    mb.struct("jpeg_compress_struct").include_forward(before=mb.typedef("j_compress_ptr"))
+    mb.struct("jpeg_decompress_struct").include_forward(before=mb.typedef("j_decompress_ptr"))
+
+    jvirt_sarray_ptr = mb.typedef("jvirt_sarray_ptr")
+    jvirt_sarray_ptr.base_type().include_forward(before=jvirt_sarray_ptr)
+    jvirt_barray_ptr = mb.typedef("jvirt_barray_ptr")
+    jvirt_barray_ptr.base_type().include_forward(before=jvirt_barray_ptr)
 
     ct = CTypesCodeGenerator(mb)
     with open("../ctj/jpeglib.py", "w") as output:
