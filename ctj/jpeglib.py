@@ -2,6 +2,8 @@ from ctypes import (
     CFUNCTYPE,
     POINTER,
     Structure,
+    Union,
+    c_char,
     c_char_p,
     c_double,
     c_int,
@@ -15,6 +17,16 @@ from ctypes import (
 )
 from enum import IntFlag
 
+size_t: type = c_ulonglong
+boolean: type = c_ubyte
+JSAMPLE: type = c_ubyte
+J12SAMPLE: type = c_short
+J16SAMPLE: type = c_ushort
+JCOEF: type = c_short
+JOCTET: type = c_ubyte
+UINT8: type = c_ubyte
+UINT16: type = c_ushort
+JDIMENSION: type = c_uint
 DCTSIZE = 8  # The basic DCT block is 8x8 samples
 DCTSIZE2 = 64  # DCTSIZE squared; # of elements in a block
 NUM_QUANT_TBLS = 4  # Quantization tables are numbered 0..3
@@ -30,38 +42,6 @@ MAX_SAMP_FACTOR = 4  # JPEG limit on sampling factors
 # sometimes emits noncompliant files doesn't mean you should too.
 C_MAX_BLOCKS_IN_MCU = 10  # compressor's limit on data units/MCU
 D_MAX_BLOCKS_IN_MCU = 10  # decompressor's limit on data units/MCU
-JCS_EXTENSIONS = 1
-JCS_ALPHA_EXTENSIONS = 1
-JDCT_DEFAULT = JDCT_ISLOW
-JDCT_FASTEST = JDCT_IFAST
-JMSG_LENGTH_MAX = 200  # recommended size of format_message buffer
-JMSG_STR_PARM_MAX = 80
-JPOOL_PERMANENT = 0  # lasts until master record is destroyed
-JPOOL_IMAGE = 1  # lasts until done with image/datastream
-JPOOL_NUMPOOLS = 2
-# Return value is one of:
-JPEG_SUSPENDED = 0  # Suspended due to lack of input data
-JPEG_HEADER_OK = 1  # Found valid image datastream
-JPEG_HEADER_TABLES_ONLY = 2  # Found valid table-specs-only datastream
-# #define JPEG_SUSPENDED       0    Suspended due to lack of input data
-JPEG_REACHED_SOS = 1  # Reached start of new scan
-JPEG_REACHED_EOI = 2  # Reached end of image
-JPEG_ROW_COMPLETED = 3  # Completed one iMCU row
-JPEG_SCAN_COMPLETED = 4  # Completed last iMCU row of a scan
-JPEG_RST0 = 0xD0  # RST0 marker code
-JPEG_EOI = 0xD9  # EOI marker code
-JPEG_APP0 = 0xE0  # APP0 marker code
-JPEG_COM = 0xFE  # COM marker code
-size_t: type = c_ulonglong
-boolean: type = c_ubyte
-JSAMPLE: type = c_ubyte
-J12SAMPLE: type = c_short
-J16SAMPLE: type = c_ushort
-JCOEF: type = c_short
-JOCTET: type = c_ubyte
-UINT8: type = c_ubyte
-UINT16: type = c_ushort
-JDIMENSION: type = c_uint
 JSAMPROW: type = POINTER(JSAMPLE)  # ptr to one image row of pixel samples.
 JSAMPARRAY: type = POINTER(JSAMPROW)  # ptr to some rows (a 2-D sample array)
 JSAMPIMAGE: type = POINTER(JSAMPARRAY)  # a 3-D sample array: top index is color
@@ -228,6 +208,10 @@ class jpeg_marker_struct(Structure):
     )
 
 
+JCS_EXTENSIONS = 1
+JCS_ALPHA_EXTENSIONS = 1
+
+
 class J_COLOR_SPACE(IntFlag):
     JCS_UNKNOWN = 0
     JCS_GRAYSCALE = 1
@@ -248,16 +232,61 @@ class J_COLOR_SPACE(IntFlag):
     JCS_RGB565 = 16
 
 
+JCS_UNKNOWN = J_COLOR_SPACE.JCS_UNKNOWN
+JCS_GRAYSCALE = J_COLOR_SPACE.JCS_GRAYSCALE
+JCS_RGB = J_COLOR_SPACE.JCS_RGB
+JCS_YCbCr = J_COLOR_SPACE.JCS_YCbCr
+JCS_CMYK = J_COLOR_SPACE.JCS_CMYK
+JCS_YCCK = J_COLOR_SPACE.JCS_YCCK
+JCS_EXT_RGB = J_COLOR_SPACE.JCS_EXT_RGB
+JCS_EXT_RGBX = J_COLOR_SPACE.JCS_EXT_RGBX
+JCS_EXT_BGR = J_COLOR_SPACE.JCS_EXT_BGR
+JCS_EXT_BGRX = J_COLOR_SPACE.JCS_EXT_BGRX
+JCS_EXT_XBGR = J_COLOR_SPACE.JCS_EXT_XBGR
+JCS_EXT_XRGB = J_COLOR_SPACE.JCS_EXT_XRGB
+JCS_EXT_RGBA = J_COLOR_SPACE.JCS_EXT_RGBA
+JCS_EXT_BGRA = J_COLOR_SPACE.JCS_EXT_BGRA
+JCS_EXT_ABGR = J_COLOR_SPACE.JCS_EXT_ABGR
+JCS_EXT_ARGB = J_COLOR_SPACE.JCS_EXT_ARGB
+JCS_RGB565 = J_COLOR_SPACE.JCS_RGB565
+
+
 class J_DCT_METHOD(IntFlag):
     JDCT_ISLOW = 0
     JDCT_IFAST = 1
     JDCT_FLOAT = 2
 
 
+JDCT_ISLOW = J_DCT_METHOD.JDCT_ISLOW
+JDCT_IFAST = J_DCT_METHOD.JDCT_IFAST
+JDCT_FLOAT = J_DCT_METHOD.JDCT_FLOAT
+
+
+JDCT_DEFAULT = JDCT_ISLOW
+JDCT_FASTEST = JDCT_IFAST
+
+
 class J_DITHER_MODE(IntFlag):
     JDITHER_NONE = 0
     JDITHER_ORDERED = 1
     JDITHER_FS = 2
+
+
+JDITHER_NONE = J_DITHER_MODE.JDITHER_NONE
+JDITHER_ORDERED = J_DITHER_MODE.JDITHER_ORDERED
+JDITHER_FS = J_DITHER_MODE.JDITHER_FS
+
+
+class jpeg_progress_mgr(Structure):
+    pass
+
+
+class jpeg_memory_mgr(Structure):
+    pass
+
+
+class jpeg_error_mgr(Structure):
+    pass
 
 
 class jpeg_common_struct(Structure):
@@ -291,6 +320,10 @@ class jpeg_decompress_struct(Structure):
 
 
 j_decompress_ptr: type = POINTER(jpeg_decompress_struct)
+
+
+class jpeg_destination_mgr(Structure):
+    pass
 
 
 class jpeg_compress_struct(Structure):
@@ -440,6 +473,10 @@ class jpeg_compress_struct(Structure):
 
         ("script_space_size", c_int),
     )
+
+
+class jpeg_source_mgr(Structure):
+    pass
 
 
 class jpeg_decompress_struct(Structure):
@@ -673,8 +710,19 @@ class jpeg_decompress_struct(Structure):
     )
 
 
-class jpeg_error_mgr(Structure):
+JMSG_LENGTH_MAX = 200  # recommended size of format_message buffer
+JMSG_STR_PARM_MAX = 80
+
+
+class _MsgParmUnion(Union):
     _fields_ = (
+        ("i", c_int * 8),
+
+        ("s", c_char * JMSG_STR_PARM_MAX),
+    )
+
+
+jpeg_error_mgr._fields = (
         # Error exit handler: does not return to caller
         ("error_exit", CFUNCTYPE(None, j_common_ptr)),
 
@@ -694,7 +742,7 @@ class jpeg_error_mgr(Structure):
         # A message can have one string parameter or up to 8 int parameters.
         ("msg_code", c_int),
 
-        ("msg_parm", union jpeg_error_mgr::(unnamed at C:\Users\cmbruns\Documents\git\ctjpeg\ctj\jpeglib.h:797:3)),
+        ("msg_parm", _MsgParmUnion),
 
         ("trace_level", c_int),  # max msg_level that will be displayed
 
@@ -728,8 +776,7 @@ class jpeg_error_mgr(Structure):
     )
 
 
-class jpeg_progress_mgr(Structure):
-    _fields_ = (
+jpeg_progress_mgr._fields = (
         ("progress_monitor", CFUNCTYPE(None, j_common_ptr)),
 
         ("pass_counter", c_long),  # work units completed in this pass
@@ -742,8 +789,7 @@ class jpeg_progress_mgr(Structure):
     )
 
 
-class jpeg_destination_mgr(Structure):
-    _fields_ = (
+jpeg_destination_mgr._fields = (
         ("next_output_byte", POINTER(JOCTET)),  # => next byte to write in buffer
 
         ("free_in_buffer", size_t),  # # of byte spaces remaining in buffer
@@ -756,8 +802,7 @@ class jpeg_destination_mgr(Structure):
     )
 
 
-class jpeg_source_mgr(Structure):
-    _fields_ = (
+jpeg_source_mgr._fields = (
         ("next_input_byte", POINTER(JOCTET)),  # => next byte to read from buffer
 
         ("bytes_in_buffer", size_t),  # # of bytes remaining in buffer
@@ -774,6 +819,11 @@ class jpeg_source_mgr(Structure):
     )
 
 
+JPOOL_PERMANENT = 0  # lasts until master record is destroyed
+JPOOL_IMAGE = 1  # lasts until done with image/datastream
+JPOOL_NUMPOOLS = 2
+
+
 class jvirt_sarray_control(Structure):
     pass
 
@@ -788,8 +838,7 @@ class jvirt_barray_control(Structure):
 jvirt_barray_ptr: type = POINTER(jvirt_barray_control)
 
 
-class jpeg_memory_mgr(Structure):
-    _fields_ = (
+jpeg_memory_mgr._fields = (
         # Method pointers
         ("alloc_small", CFUNCTYPE(c_void_p, j_common_ptr, c_int, size_t)),
 
@@ -831,6 +880,19 @@ class jpeg_memory_mgr(Structure):
 # Routine signature for application-supplied marker processing methods.
 # Need not pass marker code since it is stored in cinfo->unread_marker.
 jpeg_marker_parser_method: type = CFUNCTYPE(boolean, j_decompress_ptr)
+# Return value is one of:
+JPEG_SUSPENDED = 0  # Suspended due to lack of input data
+JPEG_HEADER_OK = 1  # Found valid image datastream
+JPEG_HEADER_TABLES_ONLY = 2  # Found valid table-specs-only datastream
+# #define JPEG_SUSPENDED       0    Suspended due to lack of input data
+JPEG_REACHED_SOS = 1  # Reached start of new scan
+JPEG_REACHED_EOI = 2  # Reached end of image
+JPEG_ROW_COMPLETED = 3  # Completed one iMCU row
+JPEG_SCAN_COMPLETED = 4  # Completed last iMCU row of a scan
+JPEG_RST0 = 0xD0  # RST0 marker code
+JPEG_EOI = 0xD9  # EOI marker code
+JPEG_APP0 = 0xE0  # APP0 marker code
+JPEG_COM = 0xFE  # COM marker code
 
 __all__ = [
     "C_MAX_BLOCKS_IN_MCU",
@@ -900,14 +962,19 @@ __all__ = [
     "jpeg_decompress_struct",
     "jpeg_decompress_struct",
     "jpeg_destination_mgr",
+    "jpeg_destination_mgr",
+    "jpeg_error_mgr",
     "jpeg_error_mgr",
     "jpeg_marker_parser_method",
     "jpeg_marker_struct",
     "jpeg_marker_struct",
     "jpeg_memory_mgr",
+    "jpeg_memory_mgr",
+    "jpeg_progress_mgr",
     "jpeg_progress_mgr",
     "jpeg_saved_marker_ptr",
     "jpeg_scan_info",
+    "jpeg_source_mgr",
     "jpeg_source_mgr",
     "jvirt_barray_control",
     "jvirt_barray_ptr",
