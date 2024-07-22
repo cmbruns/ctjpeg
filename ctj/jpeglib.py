@@ -277,15 +277,15 @@ JDITHER_ORDERED = J_DITHER_MODE.JDITHER_ORDERED
 JDITHER_FS = J_DITHER_MODE.JDITHER_FS
 
 
+class jpeg_error_mgr(Structure):
+    pass
+
+
 class jpeg_progress_mgr(Structure):
     pass
 
 
 class jpeg_memory_mgr(Structure):
-    pass
-
-
-class jpeg_error_mgr(Structure):
     pass
 
 
@@ -322,7 +322,43 @@ class jpeg_decompress_struct(Structure):
 j_decompress_ptr: type = POINTER(jpeg_decompress_struct)
 
 
+class jpeg_marker_writer(Structure):
+    pass
+
+
+class jpeg_forward_dct(Structure):
+    pass
+
+
+class jpeg_color_converter(Structure):
+    pass
+
+
+class jpeg_entropy_encoder(Structure):
+    pass
+
+
+class jpeg_c_main_controller(Structure):
+    pass
+
+
 class jpeg_destination_mgr(Structure):
+    pass
+
+
+class jpeg_c_coef_controller(Structure):
+    pass
+
+
+class jpeg_downsampler(Structure):
+    pass
+
+
+class jpeg_comp_master(Structure):
+    pass
+
+
+class jpeg_c_prep_controller(Structure):
     pass
 
 
@@ -475,7 +511,51 @@ class jpeg_compress_struct(Structure):
     )
 
 
+class jpeg_color_quantizer(Structure):
+    pass
+
+
 class jpeg_source_mgr(Structure):
+    pass
+
+
+class jpeg_input_controller(Structure):
+    pass
+
+
+class jpeg_inverse_dct(Structure):
+    pass
+
+
+class jpeg_d_coef_controller(Structure):
+    pass
+
+
+class jpeg_decomp_master(Structure):
+    pass
+
+
+class jpeg_upsampler(Structure):
+    pass
+
+
+class jpeg_marker_reader(Structure):
+    pass
+
+
+class jpeg_d_main_controller(Structure):
+    pass
+
+
+class jpeg_color_deconverter(Structure):
+    pass
+
+
+class jpeg_entropy_decoder(Structure):
+    pass
+
+
+class jpeg_d_post_controller(Structure):
     pass
 
 

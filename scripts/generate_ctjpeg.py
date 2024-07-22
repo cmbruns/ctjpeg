@@ -52,7 +52,39 @@ def main():
     mb.struct("jpeg_progress_mgr").include_forward(before=jpeg_common_struct)
     jpeg_compress_struct = mb.struct("jpeg_compress_struct")
     mb.struct("jpeg_destination_mgr").include_forward(before=jpeg_compress_struct)
-    # TODO: Forward declarations without definitions
+
+    # Forward declarations without definitions
+    for field_name in [
+        "cconvert",
+        "coef",
+        "downsample",
+        "entropy",
+        "fdct",
+        "main",
+        "marker",
+        "master",
+        "prep",
+    ]:
+        field_type = jpeg_compress_struct.field(field_name).field_type()
+        field_type.include(export=False, before=jpeg_compress_struct)
+
+    jpeg_decompress_struct = mb.struct("jpeg_decompress_struct")
+    for field_name in [
+        "cconvert",
+        "coef",
+        "cquantize",
+        "entropy",
+        "idct",
+        "inputctl",
+        "main",
+        "marker",
+        "master",
+        "post",
+        "upsample",
+    ]:
+        field_type = jpeg_decompress_struct.field(field_name).field_type()
+        field_type.include(export=False, before=jpeg_decompress_struct)
+
     # mb.struct("jpeg_comp_master").include_forward(before=jpeg_compress_struct)
     mb.struct("jpeg_source_mgr").include_forward(before=mb.struct("jpeg_decompress_struct"))
 
