@@ -10,7 +10,7 @@ def main():
     jpeglib_contents = resource_string("ctj", "jpeglib.h")
     mb = ModuleBuilder(
         path=jpeglib_path,
-        # jpeglib.h needs to include stdio.h to get definition for size_t
+        # jpeglib.h needs to include stdio.h to get definition for size_t, FILE
         unsaved_files=(
             (jpeglib_path, inspect.cleandoc(f"""
                 #include "stdio.h"
@@ -21,6 +21,7 @@ def main():
     jpeg_header.typedefs().include()
     jpeg_header.macros().include()
     jpeg_header.enums().include()
+    jpeg_header.functions().include()
 
     mb.macro("JPEG_LIB_VERSION").include()
 
@@ -33,7 +34,7 @@ def main():
         "JDIMENSION",
         "JOCTET",
         "JSAMPLE",
-        "size_t",
+        # "size_t",
         "UINT8",
         "UINT16",
     ]:
@@ -98,7 +99,9 @@ def main():
     jvirt_barray_ptr = mb.typedef("jvirt_barray_ptr")
     jvirt_barray_ptr.base_type().include_forward(before=jvirt_barray_ptr)
 
-    ct = CTypesCodeGenerator(mb)
+    ct = CTypesCodeGenerator(
+        mb,
+        ("libjpeg_lib", ", jpeg62.dll"))
     with open("../ctj/jpeglib.py", "w") as output:
         ct.write_module(output)
 
