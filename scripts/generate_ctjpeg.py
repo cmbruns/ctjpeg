@@ -1,6 +1,6 @@
 import inspect
 
-from wraptor import CTypesCodeGenerator, ModuleBuilder
+from wrapid import CTypesCodeGenerator, ModuleBuilder
 
 from ctj.resources import resource_filename, resource_string
 
@@ -99,9 +99,14 @@ def main():
     jvirt_barray_ptr = mb.typedef("jvirt_barray_ptr")
     jvirt_barray_ptr.base_type().include_forward(before=jvirt_barray_ptr)
 
+    # Forward declare FILE*
+    jpeg_stdio_dest = mb.function("jpeg_stdio_dest")
+    file_star_parm = list(jpeg_stdio_dest.parameters())[1]
+    file_star_parm.include_opaque_type(before=jpeg_stdio_dest)
+
     ct = CTypesCodeGenerator(
         mb,
-        ("libjpeg_lib", ", jpeg62.dll"))
+        ("libjpeg_lib", "jpeg62.dll"))
     with open("../ctj/jpeglib.py", "w") as output:
         ct.write_module(output)
 

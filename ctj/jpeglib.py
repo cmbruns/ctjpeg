@@ -264,7 +264,6 @@ JDCT_ISLOW = J_DCT_METHOD.JDCT_ISLOW
 JDCT_IFAST = J_DCT_METHOD.JDCT_IFAST
 JDCT_FLOAT = J_DCT_METHOD.JDCT_FLOAT
 
-
 JDCT_DEFAULT = JDCT_ISLOW
 JDCT_FASTEST = JDCT_IFAST
 
@@ -286,12 +285,12 @@ class jpeg_progress_mgr(Structure):
 
 
 # Forward declaration. Definition of _fields_ will appear later.
-class jpeg_memory_mgr(Structure):
+class jpeg_error_mgr(Structure):
     pass
 
 
 # Forward declaration. Definition of _fields_ will appear later.
-class jpeg_error_mgr(Structure):
+class jpeg_memory_mgr(Structure):
     pass
 
 
@@ -317,29 +316,33 @@ j_common_ptr: type = POINTER(jpeg_common_struct)
 # Forward declaration. Definition of _fields_ will appear later.
 class jpeg_compress_struct(Structure):
     pass
+
+
 j_compress_ptr: type = POINTER(jpeg_compress_struct)
 
 
 # Forward declaration. Definition of _fields_ will appear later.
 class jpeg_decompress_struct(Structure):
     pass
+
+
 j_decompress_ptr: type = POINTER(jpeg_decompress_struct)
+
+
+# Forward declaration. Definition of _fields_ will appear later.
+class jpeg_destination_mgr(Structure):
+    pass
 
 
 class jpeg_c_coef_controller(Structure):
     pass
 
 
-class jpeg_downsampler(Structure):
+class jpeg_forward_dct(Structure):
     pass
 
 
 class jpeg_marker_writer(Structure):
-    pass
-
-
-# Forward declaration. Definition of _fields_ will appear later.
-class jpeg_destination_mgr(Structure):
     pass
 
 
@@ -351,15 +354,15 @@ class jpeg_entropy_encoder(Structure):
     pass
 
 
-class jpeg_forward_dct(Structure):
-    pass
-
-
-class jpeg_color_converter(Structure):
+class jpeg_downsampler(Structure):
     pass
 
 
 class jpeg_c_prep_controller(Structure):
+    pass
+
+
+class jpeg_color_converter(Structure):
     pass
 
 
@@ -515,7 +518,7 @@ jpeg_compress_struct._fields_ = (
     )
 
 
-class jpeg_input_controller(Structure):
+class jpeg_marker_reader(Structure):
     pass
 
 
@@ -523,11 +526,11 @@ class jpeg_d_coef_controller(Structure):
     pass
 
 
-class jpeg_d_main_controller(Structure):
+class jpeg_upsampler(Structure):
     pass
 
 
-class jpeg_inverse_dct(Structure):
+class jpeg_input_controller(Structure):
     pass
 
 
@@ -535,20 +538,11 @@ class jpeg_color_quantizer(Structure):
     pass
 
 
-class jpeg_decomp_master(Structure):
-    pass
-
-
-class jpeg_marker_reader(Structure):
-    pass
-
-
-# Forward declaration. Definition of _fields_ will appear later.
-class jpeg_source_mgr(Structure):
-    pass
-
-
 class jpeg_color_deconverter(Structure):
+    pass
+
+
+class jpeg_d_post_controller(Structure):
     pass
 
 
@@ -556,11 +550,20 @@ class jpeg_entropy_decoder(Structure):
     pass
 
 
-class jpeg_upsampler(Structure):
+class jpeg_decomp_master(Structure):
     pass
 
 
-class jpeg_d_post_controller(Structure):
+class jpeg_inverse_dct(Structure):
+    pass
+
+
+class jpeg_d_main_controller(Structure):
+    pass
+
+
+# Forward declaration. Definition of _fields_ will appear later.
+class jpeg_source_mgr(Structure):
     pass
 
 
@@ -911,12 +914,16 @@ JPOOL_NUMPOOLS = 2
 # Forward declaration
 class jvirt_sarray_control(Structure):
     pass
+
+
 jvirt_sarray_ptr: type = POINTER(jvirt_sarray_control)
 
 
 # Forward declaration
 class jvirt_barray_control(Structure):
     pass
+
+
 jvirt_barray_ptr: type = POINTER(jvirt_barray_control)
 
 
@@ -963,14 +970,12 @@ jpeg_memory_mgr._fields_ = (
 # Need not pass marker code since it is stored in cinfo->unread_marker.
 jpeg_marker_parser_method: type = CFUNCTYPE(boolean, j_decompress_ptr)
 
-
 # Default error-management setup
 jpeg_std_error = libjpeg_lib.jpeg_std_error
 jpeg_std_error.restype = jpeg_error_mgr
 jpeg_std_error.argtypes = [
     POINTER(jpeg_error_mgr),
 ]
-
 
 jpeg_CreateCompress = libjpeg_lib.jpeg_CreateCompress
 jpeg_CreateCompress.restype = None
@@ -980,7 +985,6 @@ jpeg_CreateCompress.argtypes = [
     c_size_t,
 ]
 
-
 jpeg_CreateDecompress = libjpeg_lib.jpeg_CreateDecompress
 jpeg_CreateDecompress.restype = None
 jpeg_CreateDecompress.argtypes = [
@@ -989,7 +993,6 @@ jpeg_CreateDecompress.argtypes = [
     c_size_t,
 ]
 
-
 # Destruction of JPEG compression objects
 jpeg_destroy_compress = libjpeg_lib.jpeg_destroy_compress
 jpeg_destroy_compress.restype = None
@@ -997,12 +1000,16 @@ jpeg_destroy_compress.argtypes = [
     j_compress_ptr,
 ]
 
-
 jpeg_destroy_decompress = libjpeg_lib.jpeg_destroy_decompress
 jpeg_destroy_decompress.restype = None
 jpeg_destroy_decompress.argtypes = [
     j_decompress_ptr,
 ]
+
+
+# Opaque type
+class FILE(Structure):
+    pass
 
 
 # Caller is responsible for opening the file before and closing after.
@@ -1013,14 +1020,12 @@ jpeg_stdio_dest.argtypes = [
     POINTER(FILE),
 ]
 
-
 jpeg_stdio_src = libjpeg_lib.jpeg_stdio_src
 jpeg_stdio_src.restype = None
 jpeg_stdio_src.argtypes = [
     j_decompress_ptr,
     POINTER(FILE),
 ]
-
 
 # Data source and destination managers: memory buffers.
 jpeg_mem_dest = libjpeg_lib.jpeg_mem_dest
@@ -1031,7 +1036,6 @@ jpeg_mem_dest.argtypes = [
     POINTER(c_ulong),
 ]
 
-
 jpeg_mem_src = libjpeg_lib.jpeg_mem_src
 jpeg_mem_src.restype = None
 jpeg_mem_src.argtypes = [
@@ -1040,14 +1044,12 @@ jpeg_mem_src.argtypes = [
     c_ulong,
 ]
 
-
 # Default parameter setup for compression
 jpeg_set_defaults = libjpeg_lib.jpeg_set_defaults
 jpeg_set_defaults.restype = None
 jpeg_set_defaults.argtypes = [
     j_compress_ptr,
 ]
-
 
 # Compression parameter setup aids
 jpeg_set_colorspace = libjpeg_lib.jpeg_set_colorspace
@@ -1057,13 +1059,11 @@ jpeg_set_colorspace.argtypes = [
     J_COLOR_SPACE,
 ]
 
-
 jpeg_default_colorspace = libjpeg_lib.jpeg_default_colorspace
 jpeg_default_colorspace.restype = None
 jpeg_default_colorspace.argtypes = [
     j_compress_ptr,
 ]
-
 
 jpeg_set_quality = libjpeg_lib.jpeg_set_quality
 jpeg_set_quality.restype = None
@@ -1073,7 +1073,6 @@ jpeg_set_quality.argtypes = [
     boolean,
 ]
 
-
 jpeg_set_linear_quality = libjpeg_lib.jpeg_set_linear_quality
 jpeg_set_linear_quality.restype = None
 jpeg_set_linear_quality.argtypes = [
@@ -1081,7 +1080,6 @@ jpeg_set_linear_quality.argtypes = [
     c_int,
     boolean,
 ]
-
 
 jpeg_add_quant_table = libjpeg_lib.jpeg_add_quant_table
 jpeg_add_quant_table.restype = None
@@ -1093,13 +1091,11 @@ jpeg_add_quant_table.argtypes = [
     boolean,
 ]
 
-
 jpeg_quality_scaling = libjpeg_lib.jpeg_quality_scaling
 jpeg_quality_scaling.restype = None
 jpeg_quality_scaling.argtypes = [
     c_int,
 ]
-
 
 jpeg_enable_lossless = libjpeg_lib.jpeg_enable_lossless
 jpeg_enable_lossless.restype = None
@@ -1109,13 +1105,11 @@ jpeg_enable_lossless.argtypes = [
     c_int,
 ]
 
-
 jpeg_simple_progression = libjpeg_lib.jpeg_simple_progression
 jpeg_simple_progression.restype = None
 jpeg_simple_progression.argtypes = [
     j_compress_ptr,
 ]
-
 
 jpeg_suppress_tables = libjpeg_lib.jpeg_suppress_tables
 jpeg_suppress_tables.restype = None
@@ -1124,20 +1118,17 @@ jpeg_suppress_tables.argtypes = [
     boolean,
 ]
 
-
 jpeg_alloc_quant_table = libjpeg_lib.jpeg_alloc_quant_table
 jpeg_alloc_quant_table.restype = JQUANT_TBL
 jpeg_alloc_quant_table.argtypes = [
     j_common_ptr,
 ]
 
-
 jpeg_alloc_huff_table = libjpeg_lib.jpeg_alloc_huff_table
 jpeg_alloc_huff_table.restype = JHUFF_TBL
 jpeg_alloc_huff_table.argtypes = [
     j_common_ptr,
 ]
-
 
 # Main entry points for compression
 jpeg_start_compress = libjpeg_lib.jpeg_start_compress
@@ -1147,7 +1138,6 @@ jpeg_start_compress.argtypes = [
     boolean,
 ]
 
-
 jpeg_write_scanlines = libjpeg_lib.jpeg_write_scanlines
 jpeg_write_scanlines.restype = JDIMENSION
 jpeg_write_scanlines.argtypes = [
@@ -1155,7 +1145,6 @@ jpeg_write_scanlines.argtypes = [
     JSAMPARRAY,
     JDIMENSION,
 ]
-
 
 jpeg12_write_scanlines = libjpeg_lib.jpeg12_write_scanlines
 jpeg12_write_scanlines.restype = JDIMENSION
@@ -1165,7 +1154,6 @@ jpeg12_write_scanlines.argtypes = [
     JDIMENSION,
 ]
 
-
 jpeg16_write_scanlines = libjpeg_lib.jpeg16_write_scanlines
 jpeg16_write_scanlines.restype = JDIMENSION
 jpeg16_write_scanlines.argtypes = [
@@ -1174,13 +1162,11 @@ jpeg16_write_scanlines.argtypes = [
     JDIMENSION,
 ]
 
-
 jpeg_finish_compress = libjpeg_lib.jpeg_finish_compress
 jpeg_finish_compress.restype = None
 jpeg_finish_compress.argtypes = [
     j_compress_ptr,
 ]
-
 
 # Replaces jpeg_write_scanlines when writing raw downsampled data.
 jpeg_write_raw_data = libjpeg_lib.jpeg_write_raw_data
@@ -1191,7 +1177,6 @@ jpeg_write_raw_data.argtypes = [
     JDIMENSION,
 ]
 
-
 jpeg12_write_raw_data = libjpeg_lib.jpeg12_write_raw_data
 jpeg12_write_raw_data.restype = JDIMENSION
 jpeg12_write_raw_data.argtypes = [
@@ -1199,7 +1184,6 @@ jpeg12_write_raw_data.argtypes = [
     J12SAMPIMAGE,
     JDIMENSION,
 ]
-
 
 # Write a special marker.  See libjpeg.txt concerning safe usage.
 jpeg_write_marker = libjpeg_lib.jpeg_write_marker
@@ -1211,7 +1195,6 @@ jpeg_write_marker.argtypes = [
     c_uint,
 ]
 
-
 # Same, but piecemeal.
 jpeg_write_m_header = libjpeg_lib.jpeg_write_m_header
 jpeg_write_m_header.restype = None
@@ -1221,7 +1204,6 @@ jpeg_write_m_header.argtypes = [
     c_uint,
 ]
 
-
 jpeg_write_m_byte = libjpeg_lib.jpeg_write_m_byte
 jpeg_write_m_byte.restype = None
 jpeg_write_m_byte.argtypes = [
@@ -1229,14 +1211,12 @@ jpeg_write_m_byte.argtypes = [
     c_int,
 ]
 
-
 # Alternate compression function: just write an abbreviated table file
 jpeg_write_tables = libjpeg_lib.jpeg_write_tables
 jpeg_write_tables.restype = None
 jpeg_write_tables.argtypes = [
     j_compress_ptr,
 ]
-
 
 # Write ICC profile.  See libjpeg.txt for usage information.
 jpeg_write_icc_profile = libjpeg_lib.jpeg_write_icc_profile
@@ -1247,7 +1227,6 @@ jpeg_write_icc_profile.argtypes = [
     c_uint,
 ]
 
-
 # Decompression startup: read start of JPEG datastream to see what's there
 jpeg_read_header = libjpeg_lib.jpeg_read_header
 jpeg_read_header.restype = None
@@ -1256,12 +1235,10 @@ jpeg_read_header.argtypes = [
     boolean,
 ]
 
-
 # Return value is one of:
 JPEG_SUSPENDED = 0  # Suspended due to lack of input data
 JPEG_HEADER_OK = 1  # Found valid image datastream
 JPEG_HEADER_TABLES_ONLY = 2  # Found valid table-specs-only datastream
-
 
 # Main entry points for decompression
 jpeg_start_decompress = libjpeg_lib.jpeg_start_decompress
@@ -1269,7 +1246,6 @@ jpeg_start_decompress.restype = boolean
 jpeg_start_decompress.argtypes = [
     j_decompress_ptr,
 ]
-
 
 jpeg_read_scanlines = libjpeg_lib.jpeg_read_scanlines
 jpeg_read_scanlines.restype = JDIMENSION
@@ -1279,7 +1255,6 @@ jpeg_read_scanlines.argtypes = [
     JDIMENSION,
 ]
 
-
 jpeg12_read_scanlines = libjpeg_lib.jpeg12_read_scanlines
 jpeg12_read_scanlines.restype = JDIMENSION
 jpeg12_read_scanlines.argtypes = [
@@ -1287,7 +1262,6 @@ jpeg12_read_scanlines.argtypes = [
     J12SAMPARRAY,
     JDIMENSION,
 ]
-
 
 jpeg16_read_scanlines = libjpeg_lib.jpeg16_read_scanlines
 jpeg16_read_scanlines.restype = JDIMENSION
@@ -1297,7 +1271,6 @@ jpeg16_read_scanlines.argtypes = [
     JDIMENSION,
 ]
 
-
 jpeg_skip_scanlines = libjpeg_lib.jpeg_skip_scanlines
 jpeg_skip_scanlines.restype = JDIMENSION
 jpeg_skip_scanlines.argtypes = [
@@ -1305,14 +1278,12 @@ jpeg_skip_scanlines.argtypes = [
     JDIMENSION,
 ]
 
-
 jpeg12_skip_scanlines = libjpeg_lib.jpeg12_skip_scanlines
 jpeg12_skip_scanlines.restype = JDIMENSION
 jpeg12_skip_scanlines.argtypes = [
     j_decompress_ptr,
     JDIMENSION,
 ]
-
 
 jpeg_crop_scanline = libjpeg_lib.jpeg_crop_scanline
 jpeg_crop_scanline.restype = None
@@ -1322,7 +1293,6 @@ jpeg_crop_scanline.argtypes = [
     POINTER(JDIMENSION),
 ]
 
-
 jpeg12_crop_scanline = libjpeg_lib.jpeg12_crop_scanline
 jpeg12_crop_scanline.restype = None
 jpeg12_crop_scanline.argtypes = [
@@ -1331,13 +1301,11 @@ jpeg12_crop_scanline.argtypes = [
     POINTER(JDIMENSION),
 ]
 
-
 jpeg_finish_decompress = libjpeg_lib.jpeg_finish_decompress
 jpeg_finish_decompress.restype = boolean
 jpeg_finish_decompress.argtypes = [
     j_decompress_ptr,
 ]
-
 
 # Replaces jpeg_read_scanlines when reading raw downsampled data.
 jpeg_read_raw_data = libjpeg_lib.jpeg_read_raw_data
@@ -1348,7 +1316,6 @@ jpeg_read_raw_data.argtypes = [
     JDIMENSION,
 ]
 
-
 jpeg12_read_raw_data = libjpeg_lib.jpeg12_read_raw_data
 jpeg12_read_raw_data.restype = JDIMENSION
 jpeg12_read_raw_data.argtypes = [
@@ -1357,14 +1324,12 @@ jpeg12_read_raw_data.argtypes = [
     JDIMENSION,
 ]
 
-
 # Additional entry points for buffered-image mode.
 jpeg_has_multiple_scans = libjpeg_lib.jpeg_has_multiple_scans
 jpeg_has_multiple_scans.restype = boolean
 jpeg_has_multiple_scans.argtypes = [
     j_decompress_ptr,
 ]
-
 
 jpeg_start_output = libjpeg_lib.jpeg_start_output
 jpeg_start_output.restype = boolean
@@ -1373,13 +1338,11 @@ jpeg_start_output.argtypes = [
     c_int,
 ]
 
-
 jpeg_finish_output = libjpeg_lib.jpeg_finish_output
 jpeg_finish_output.restype = boolean
 jpeg_finish_output.argtypes = [
     j_decompress_ptr,
 ]
-
 
 jpeg_input_complete = libjpeg_lib.jpeg_input_complete
 jpeg_input_complete.restype = boolean
@@ -1387,13 +1350,11 @@ jpeg_input_complete.argtypes = [
     j_decompress_ptr,
 ]
 
-
 jpeg_new_colormap = libjpeg_lib.jpeg_new_colormap
 jpeg_new_colormap.restype = None
 jpeg_new_colormap.argtypes = [
     j_decompress_ptr,
 ]
-
 
 jpeg_consume_input = libjpeg_lib.jpeg_consume_input
 jpeg_consume_input.restype = None
@@ -1401,20 +1362,17 @@ jpeg_consume_input.argtypes = [
     j_decompress_ptr,
 ]
 
-
 # #define JPEG_SUSPENDED       0    Suspended due to lack of input data
 JPEG_REACHED_SOS = 1  # Reached start of new scan
 JPEG_REACHED_EOI = 2  # Reached end of image
 JPEG_ROW_COMPLETED = 3  # Completed one iMCU row
 JPEG_SCAN_COMPLETED = 4  # Completed last iMCU row of a scan
 
-
 jpeg_calc_output_dimensions = libjpeg_lib.jpeg_calc_output_dimensions
 jpeg_calc_output_dimensions.restype = None
 jpeg_calc_output_dimensions.argtypes = [
     j_decompress_ptr,
 ]
-
 
 # Control saving of COM and APPn markers into marker_list.
 jpeg_save_markers = libjpeg_lib.jpeg_save_markers
@@ -1425,7 +1383,6 @@ jpeg_save_markers.argtypes = [
     c_uint,
 ]
 
-
 # Install a special processing method for COM or APPn markers.
 jpeg_set_marker_processor = libjpeg_lib.jpeg_set_marker_processor
 jpeg_set_marker_processor.restype = None
@@ -1435,14 +1392,12 @@ jpeg_set_marker_processor.argtypes = [
     jpeg_marker_parser_method,
 ]
 
-
 # Read or write raw DCT coefficients --- useful for lossless transcoding.
 jpeg_read_coefficients = libjpeg_lib.jpeg_read_coefficients
 jpeg_read_coefficients.restype = jvirt_barray_ptr
 jpeg_read_coefficients.argtypes = [
     j_decompress_ptr,
 ]
-
 
 jpeg_write_coefficients = libjpeg_lib.jpeg_write_coefficients
 jpeg_write_coefficients.restype = None
@@ -1451,14 +1406,12 @@ jpeg_write_coefficients.argtypes = [
     POINTER(jvirt_barray_ptr),
 ]
 
-
 jpeg_copy_critical_parameters = libjpeg_lib.jpeg_copy_critical_parameters
 jpeg_copy_critical_parameters.restype = None
 jpeg_copy_critical_parameters.argtypes = [
     j_decompress_ptr,
     j_compress_ptr,
 ]
-
 
 # If you choose to abort compression or decompression before completing
 # jpeg_finish_(de)compress, then you need to clean up to release memory,
@@ -1471,13 +1424,11 @@ jpeg_abort_compress.argtypes = [
     j_compress_ptr,
 ]
 
-
 jpeg_abort_decompress = libjpeg_lib.jpeg_abort_decompress
 jpeg_abort_decompress.restype = None
 jpeg_abort_decompress.argtypes = [
     j_decompress_ptr,
 ]
-
 
 # Generic versions of jpeg_abort and jpeg_destroy that work on either
 # flavor of JPEG object.  These may be more convenient in some places.
@@ -1487,13 +1438,11 @@ jpeg_abort.argtypes = [
     j_common_ptr,
 ]
 
-
 jpeg_destroy = libjpeg_lib.jpeg_destroy
 jpeg_destroy.restype = None
 jpeg_destroy.argtypes = [
     j_common_ptr,
 ]
-
 
 # Default restart-marker-resync procedure for use by data source modules
 jpeg_resync_to_restart = libjpeg_lib.jpeg_resync_to_restart
@@ -1503,7 +1452,6 @@ jpeg_resync_to_restart.argtypes = [
     c_int,
 ]
 
-
 # Read ICC profile.  See libjpeg.txt for usage information.
 jpeg_read_icc_profile = libjpeg_lib.jpeg_read_icc_profile
 jpeg_read_icc_profile.restype = boolean
@@ -1512,7 +1460,6 @@ jpeg_read_icc_profile.argtypes = [
     POINTER(POINTER(JOCTET)),
     POINTER(c_uint),
 ]
-
 
 JPEG_RST0 = 0xD0  # RST0 marker code
 JPEG_EOI = 0xD9  # EOI marker code
